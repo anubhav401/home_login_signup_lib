@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.util.Log;
@@ -33,62 +34,61 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginFragment extends Fragment {
 
 
-        EditText rollno_edit, password_edit ;
-        TextView login_text;
-        Button login_button,forgot_button;
+        EditText Username, password_edit ;
+        TextView CreateAccount,forgotText,usertext,passphase;
+        Button login_button;
         String  password , roll_no ,email ;
         private FirebaseAuth Auth;
         private FirebaseAuth.AuthStateListener AuthListener;
         private LoginFragment.afterLoginListener activity_listener;
-        View view;
+        private FragmentChangeListener fr_change;
         ProgressDialog progressDialog;
-        public static View MyView;
-        RelativeLayout l1,l2;
-        TextView test;
 
 
         public interface afterLoginListener{
                 void afterLogin(String RollNumber);
+
         }
 
         @Override
         public void onAttach(Activity activity) {
                 super.onAttach(activity);
                 activity_listener=(LoginFragment.afterLoginListener)activity;
+                fr_change=(FragmentChangeListener)activity;
         }
 
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-                view=inflater.inflate(R.layout.fragment_login, container, false);
-             //   MyView=inflater.inflate(R.layout.fragment_login, container, false);
 
+              final View view=inflater.inflate(R.layout.fragment_login, container, false);
 
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setMessage("Please Wait...");
-
-
-                rollno_edit = (EditText) view.findViewById(R.id.roll_no);
-                login_text= view.findViewById(R.id.textView2);
+                usertext=view.findViewById(R.id.usertextname);
+                passphase=view.findViewById(R.id.passphase);
+                Username = (EditText) view.findViewById(R.id.username);
                 password_edit = (EditText) view.findViewById(R.id.input_password);
                 login_button = (Button) view.findViewById(R.id.Login);
-                rollno_edit.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-                forgot_button=view.findViewById(R.id.forgot);
-                test=view.findViewById(R.id.forgotText);
+                forgotText=view.findViewById(R.id.forgotText);
+                CreateAccount = view.findViewById(R.id.create_account);
 
+                Username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-           test.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    rollno_edit.setText("");
-                    password_edit.setVisibility(View.INVISIBLE);
-                    login_button.setVisibility(View.INVISIBLE);
-                    login_text.setVisibility(View.INVISIBLE);
-                    test.setVisibility(View.INVISIBLE);
-                    forgot_button.setVisibility(View.VISIBLE);
-                }
-            });
+               forgotText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        fr_change.changeFragment(new FPFragment());
+
+                    }
+                });
+
+               CreateAccount.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       fr_change.changeFragment(new SignUpFragment());
+                   }
+               });
 
                 Auth = FirebaseAuth.getInstance();
                 AuthListener = new FirebaseAuth.AuthStateListener() {
@@ -98,167 +98,84 @@ public class LoginFragment extends Fragment {
 
                                 login_button.setOnClickListener(new View.OnClickListener() {
                                         @Override
-                                        public void onClick(View view) {
+                                        public void onClick(View view1) {
 
-                                                roll_no = rollno_edit.getText().toString().trim();
+                                                roll_no = Username.getText().toString().trim();
                                                 password = password_edit.getText().toString().trim();
 
                                                 if (checkValidEntries()) {
-
+                                                        progressDialog = ProgressDialog.show(getActivity(),"","Please Wait...");
                                                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference();
                                                         databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
                                                                 @Override
                                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                                                                          try{
-
-                                                                                 progressDialog.show();
                                                                                  if(dataSnapshot.child("Users").hasChild(roll_no)!=false) {
                                                                                      email = dataSnapshot.child("Users").child(roll_no).child("Email").getValue().toString();
-
                                                                                  }
-
                                                                                  Auth.signInWithEmailAndPassword(email, password)
                                                                                          .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                                                                                          @Override
                                                                                                          public void onComplete(@NonNull Task<AuthResult> task) {
-
                                                                                                                  if(task.isSuccessful()){
-
                                                                                                                          activity_listener.afterLogin(roll_no);
                                                                                                                          progressDialog.hide();
 
                                                                                                                  }else{
                                                                                                                          progressDialog.hide();
-                                                                                                                         Toast.makeText(getActivity(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                                                                                                         Snackbar.make(view,task.getException().getMessage(),Snackbar.LENGTH_LONG).show();
                                                                                                                  }
-
                                                                                                          }
 
                                                                                                          // ...
                                                                                                  }
                                                                                          );
-
                                                                          }catch (Exception e){
                                                                                  progressDialog.hide();
-                                                                                 Toast.makeText(getActivity(),"User dont exists",Toast.LENGTH_SHORT).show();
+                                                                             Snackbar.make(view,"User don't Exist",Snackbar.LENGTH_LONG).show();
 
                                                                                  password_edit.setText("");
-                                                                                 rollno_edit.setText("");
-
+                                                                                 Username.setText("");
                                                                          }
-
                                                                 }
-
                                                                 @Override
                                                                 public void onCancelled(DatabaseError databaseError) {
-
                                                                         progressDialog.hide();
                                                                 }
                                                         });
-
                                                 }
-
                                         }
-                                });
-
-                                forgot_button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                       final String roll_num=rollno_edit.getText().toString().trim();
-                                     if(checkforgetentry()){
-                                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                             @Override
-                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                 try{
-
-                                                     progressDialog.show();
-                                                     if(dataSnapshot.child("Users").hasChild(roll_num)!=false) {
-                                                         email = dataSnapshot.child("Users").child(roll_num).child("Email").getValue().toString();
-                                                     }else{
-                                                         email = dataSnapshot.child("Teachers").child(roll_num).child("Email").getValue().toString();
-                                                     }
-                                                     Log.e("hello email",email);
-                                                     Auth.sendPasswordResetEmail(email)
-                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                         @Override
-                                                                         public void onComplete(@NonNull Task<Void> task) {
-
-                                                                             if(task.isSuccessful()){
-                                                                                 Toast.makeText(getActivity(),"link sent",Toast.LENGTH_SHORT).show();
-                                                                                 progressDialog.hide();
-
-                                                                             }else{
-                                                                                 progressDialog.hide();
-                                                                                 Toast.makeText(getActivity(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                                                                             }
-
-                                                                         }
-
-                                                                         // ...
-                                                                     }
-                                                             );
-
-                                                 }catch (Exception e){
-                                                     progressDialog.hide();
-                                                     Toast.makeText(getActivity(),"User dont exists",Toast.LENGTH_SHORT).show();
-
-                                                     rollno_edit.setText("");
-
-                                                 }
-
-                                             }
-
-                                             @Override
-                                             public void onCancelled(DatabaseError databaseError) {
-
-                                                 progressDialog.hide();
-                                             }
-                                         });
-
-                                     }
-
-                                    }
                                 });
                         }
                 };
-
                 return view;
         }
 
-       boolean checkforgetentry() {
-            if (rollno_edit.getText().toString().length() < 10) {
-                rollno_edit.setError("Roll Number must be 10 digits");
-                return false;
-
-            }
-            return true;
-        }
-
-
-
         boolean checkValidEntries() {
+            int count=0;
+            usertext.setText("");
+            passphase.setText("");
 
+            if(Username.getText().toString().trim().length()>5){
+                if(Username.getText().toString().trim().length()<15) {
+                    count++;
+                }else
+                    usertext.setText("Username must have at max 15 characters");
+            }else{
+                usertext.setText("Username must have at least 5 characters");
+            }
 
-                        if(rollno_edit.getText().toString().length()>=10){
-
-                                if (password_edit.getText().toString().length() >= 6) {
-
-                                                 return true;
-
-                                }
-                                else
-                                        password_edit.setError("Password is too short");
-
-                        }else{
-                                rollno_edit.setError("Roll Number must be 10 digits");
-                        }
-
-
+            if (password_edit.getText().toString().length() >= 6) {
+                if(count==1) {
+                    return true;
+                }
+            }
+            else
+                passphase.setText("Password is too short");
 
                 return false;
         }
+
 
         @Override
         public void onStart() {

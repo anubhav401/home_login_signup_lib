@@ -13,9 +13,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        repositories {
-            mavenCentral()
-        }
     }
 
     buildTypes {
@@ -56,3 +53,4 @@ configurations.all{
         }
     }
 }
+

@@ -182,95 +182,6 @@ public class HomeFragment extends Fragment {
                 if (isLoggedIn) {
                        // showImages();
 
-                        DatabaseReference databaseReference2 = root_ref.child("id_map_roll");
-                        databaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                        for(DataSnapshot single : dataSnapshot.getChildren()){
-
-                                                String db_email = single.child("id").getValue().toString();
-                                                String db_roll = single.getKey();
-
-                                                String user_email = user.getEmail();
-
-                                                if(user_email.equals(db_email)){
-
-                                                        RollNumber = db_roll;
-
-                                                        final DatabaseReference dRef = root_ref.child("new_rewards").child(RollNumber);
-                                                        dRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                                                                        for (DataSnapshot item_snapshot : dataSnapshot.getChildren()) {
-
-
-
-                                                                                String reward_date = item_snapshot.child("reward_date").getValue().toString();
-                                                                                String reward_detail = item_snapshot.child("reward_detail").getValue().toString();
-
-
-                                                                                if(reward_date.equals(date)  &&  reward_detail.equals("Daily Login Reward")){
-
-                                                                                        shouldGetReward = false;
-
-
-
-                                                                                }
-                                                                        }
-
-
-                                                                        if(shouldGetReward){
-
-                                                                                AlertDialog.Builder builder;
-                                                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                                                                        builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert );
-                                                                                } else {
-                                                                                        builder = new AlertDialog.Builder(getActivity());
-                                                                                }
-                                                                                builder.setTitle("Congratulations")
-                                                                                        .setMessage("You have won 250 points as your daily login reward. Continue visiting our app daily to earn more!")
-                                                                                        .setPositiveButton("OK", null)
-                                                                                        .show();
-
-
-                                                                                Map<String, Object> map = new HashMap<String, Object>();
-                                                                                map.put("reward_date", date);
-                                                                                map.put("reward_detail", "Daily Login Reward");
-                                                                                map.put("reward_points", "250");
-                                                                                map.put("time_stamp",getTimeStamp());
-
-
-                                                                                dRef.push().setValue(map);
-
-                                                                        }
-
-                                                                }
-
-
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                                }
-                                                        });
-
-                                                }
-
-                                        }
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                        });
-
-
-
                         final SharedPreferences shared=getActivity().getSharedPreferences("Signedin", Context.MODE_PRIVATE);
 
                         prog= ProgressDialog.show(getActivity(),"","Loading..");
@@ -286,11 +197,8 @@ public class HomeFragment extends Fragment {
 
                                                 edi.putString("StringNum"+count,current_snapshot.getValue(String.class));
                                                 edi.apply();
-//                                                first_linear_layout.addView(current_notif);
 
                                                 count++;
-
-
 
 
                                         }
@@ -333,11 +241,7 @@ public class HomeFragment extends Fragment {
                                                 edit.putString("StringNumber" + count, current_snapshot.getValue(String.class));
 
                                                 edit.apply();
-                                            /*    if (count % 2 == 0){
-                                                        current_notif.setBackgroundColor(Color.GRAY);
-                                                        notif_textview.setTextColor(Color.WHITE);
-                                                }
-*/
+
                                                 count++;
                                         }
                                         Log.e("hello this is no 2", "this is working" + count);

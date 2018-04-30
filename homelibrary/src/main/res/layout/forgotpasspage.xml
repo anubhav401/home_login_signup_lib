@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+    <TextView
+        android:id="@+id/forgot_password_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:padding="7dp"
+        android:text="Password assistance"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/textviewundertop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/forgot_password_text"
+        android:layout_marginTop="20sp"
+        android:padding="7dp"
+        android:text="Enter the user name associated with your Account. Password reseting link will be send to your linked email address."
+        android:textSize="18sp"
+        android:textStyle="italic"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="7">
+    <EditText
+        android:id="@+id/UserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:padding="13sp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/textbackground"
+        android:ems="10"
+        android:textSize="20sp"
+        android:hint="Enter username here"
+        android:inputType="textPersonName" />
+        <TextView
+            android:id="@+id/usernametext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="8dp"
+            android:layout_below="@+id/UserName"
+            android:gravity="left"
+            android:text=""
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_red_light"/>
+
+
+        <Button
+        android:id="@+id/Send_Link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/UserName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:padding="7dp"
+        android:text="Continue"
+        android:textSize="17sp"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        />
+
+    </RelativeLayout>
+</LinearLayout>
