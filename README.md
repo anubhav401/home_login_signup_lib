@@ -16,7 +16,7 @@ if 'libs' folder is not present then make one of your own and then add this aar 
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:support-compat:26.1.0'
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.google.firebase:firebase-auth:15.0.0'
+    implementation 'com.google.firebase:firebase-auth:15.0.0'
     compile 'com.google.firebase:firebase-database:15.0.0'
     compile ('com.github.bumptech.glide:glide:4.4.0@aar'){
         transitive =true
