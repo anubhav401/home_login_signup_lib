@@ -26,7 +26,7 @@ if 'libs' folder is not present then make one of your own and then add this aar 
 4. To create Fragment of home, login signup page add this to top of your activity
       import android.support.v4.app.Fragment
       
-   and implement listeners as shown: 
+   and implementation of listeners as shown: 
    
         <activity name> implements FragmentChangeListener,SignUpFragment.afterSignUpListener , LoginFragment.afterLoginListener{....}
         
